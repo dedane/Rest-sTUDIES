@@ -6,15 +6,30 @@ const Product = require('../models/product');
 
 router.get('/', (req, res, next) => {
     Product.find()
+    .select('name price _id')
     .exec()
     .then(docs => {
+        const response = {
+            count: docs.length,
+            products: docs.map(doc => {
+                return {
+                    name: doc.name,
+                    price: doc.price,
+                    _id: doc._id,
+                    request: {
+                        type: 'GET',
+                        url: req.get('host')+'/products/'+ doc._id 
+                    }
+                };
+            })
+        };
         console.log(docs);
-        if (docs.length >= 0){
-            res.status(200).json(docs);
-        }
-        else {
-            res.status(404).json({ message: 'No entries found'});
-        }
+        //if (docs.length >= 0){
+            res.status(200).json(response);
+        //}
+        //else {
+            //res.status(404).json({ message: 'No entries found'});
+        //}
 
     });
 });
@@ -35,19 +50,30 @@ router.post('/', (req, res, next) => {
     })
     .catch(err => console.log(err));
     res.status(201).json({
-            message: 'Handling POST request to /products',
-            createdProduct: product
+            message: 'Created product successfully',
+            createdProduct: {
+                name: result.name,
+                price: result.price,
+                _id: result._id
+            }
         });
    });
 
 router.get("/:productId", (req, res, next) => {
     const id = req.params.productId;
     Product.findById(id)
+    .select('name price_id')
     .exec()
     .then(doc => {
         console.log("From database",doc);
         if (doc) {
-            res.status(200).json(doc);
+            res.status(200).json({
+                product: doc,
+                req: {
+                    type: "GET",
+                    url: 'Http://localhost:3000/products'
+                }
+            });
         }
         else{
             res.status(404).json({message: "No valid entry found for provided ID"});
@@ -68,8 +94,14 @@ router.get("/:productId", (req, res, next) => {
     Product.update({_id: id},{ $set: updateOps})
     .exec()
     .then(result => {
-        console.log(result);
-        res.status(200).json(result);
+        console.log(res);
+        res.status(200).json({
+            message: 'Product Updated',
+            request: {
+                type: 'GET',
+                url: 'http://localhost:3000/products/' +id
+            }
+        });
     })
     .catch(err => {
         console.log(err);

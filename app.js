@@ -11,6 +11,7 @@ const orderRoutes = require('./routes/orders');
 mongoose.connect("mongodb+srv://shop-owner_1:1EWXbaHq8KjmX941@shopping-1-ccw4o.mongodb.net/test?retryWrites=true&w=majority",{
     useNewUrlParser: true
 });
+mongoose.Promise = global.Promise;
 
 app.use(morgan('dev'));
 app.use(bodyparser.urlencoded({extended: false}));
