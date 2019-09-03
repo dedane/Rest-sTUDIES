@@ -50,7 +50,7 @@ router.post('/', (req, res, next) => {
     })
     .catch(err => console.log(err));
     res.status(201).json({
-            message: 'Created product successfully',
+            message: 'Created product successfully'+result._id,
             createdProduct: {
                 name: result.name,
                 price: result.price,
@@ -69,8 +69,9 @@ router.get("/:productId", (req, res, next) => {
         if (doc) {
             res.status(200).json({
                 product: doc,
-                req: {
+                request: {
                     type: "GET",
+                    description: 'Get all Products',
                     url: 'Http://localhost:3000/products'
                 }
             });
@@ -99,7 +100,7 @@ router.get("/:productId", (req, res, next) => {
             message: 'Product Updated',
             request: {
                 type: 'GET',
-                url: 'http://localhost:3000/products/' +id
+                url: 'http://localhost:3000/products/' + id
             }
         });
     })
@@ -114,7 +115,14 @@ router.get("/:productId", (req, res, next) => {
     Product.remove({_id: id})
     .exec()
     .then(result => {
-        res.status(200).json(result);
+        res.status(200).json({
+            message: 'Product Deleted',
+            request: {
+                type: 'POST',
+                URL: 'HTTP://localhost:3000/product',
+                body: { name: 'String', price: 'Number'}
+            }
+        });
     })
     .catch(err => {
         console.log(err);
