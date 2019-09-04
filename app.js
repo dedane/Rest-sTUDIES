@@ -3,6 +3,7 @@ const app = express();
 //We use Morgan
 const morgan =require('morgan');
 const bodyparser =require('body-parser');
+const multer = require('multer');
 const mongoose =require('mongoose');
 
 const productRoutes = require('./routes/products');
@@ -14,6 +15,7 @@ mongoose.connect("mongodb+srv://shop-owner_1:1EWXbaHq8KjmX941@shopping-1-ccw4o.m
 mongoose.Promise = global.Promise;
 
 app.use(morgan('dev'));
+app.use('/uploads' ,express.static('uploads'));
 app.use(bodyparser.urlencoded({extended: false}));
 app.use(bodyparser.json());
 
