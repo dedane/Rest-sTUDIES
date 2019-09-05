@@ -8,6 +8,7 @@ const mongoose =require('mongoose');
 
 const productRoutes = require('./routes/products');
 const orderRoutes = require('./routes/orders');
+const userRoutes = require('./routes/user');
 
 mongoose.connect("mongodb+srv://shop-owner_1:1EWXbaHq8KjmX941@shopping-1-ccw4o.mongodb.net/test?retryWrites=true&w=majority",{
     useNewUrlParser: true
@@ -30,6 +31,8 @@ app.use((res, req, next) =>{
     next();
 });
 
+//Routes that handle request
+app.use('/user', userRoutes);
 app.use('/products', productRoutes);
 app.use('/orders', orderRoutes);
 
