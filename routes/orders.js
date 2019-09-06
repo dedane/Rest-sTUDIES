@@ -17,11 +17,7 @@ router.get("/", (req, res ,next) => {
                 return {
                     id: doc._id,
                     product: doc.product,
-                    quantity: doc.quantity,
-                    request:{
-                        type: 'GET',
-                        url: 'http://localhost:3000/orders/' + doc._id
-                    }
+                    quantity: doc.quantity
                 };
             })
             
