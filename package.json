@@ -20,5 +20,13 @@
   },
   "devDependencies": {
     "nodemon": "^1.19.1"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dedane/Rest-sTUDIES.git"
+  },
+  "bugs": {
+    "url": "https://github.com/dedane/Rest-sTUDIES/issues"
+  },
+  "homepage": "https://github.com/dedane/Rest-sTUDIES#readme"
 }
