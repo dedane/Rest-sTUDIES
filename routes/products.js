@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const multer = require('multer');
 const checkAuth = require('../middleware/check-auth');
 
+const ProductController = require('../controllers/product');
 
 const storage = multer.diskStorage({
   destination: function(req, file, cb){
@@ -16,75 +17,10 @@ const storage = multer.diskStorage({
 const upload = multer({storage: storage });
 const Product = require('../models/product');
 
-router.get('/', (req, res, next) => {
-    Product.find()
-    .select('name price _id productImage')
-    .exec()
-    .then(docs => {
-        const response = {
-            count: docs.length,
-            products: docs.map(doc => {
-                return {
-                    name: doc.name,
-                    price: doc.price,
-                    productImage: doc.productImage,
-                    _id: doc._id,
-                    request: {
-                        type: 'GET',
-                        url: req.get('host')+'/products/'+ doc._id 
-                    }
-                };
-            })
-        };
-        console.log(docs);
-        //if (docs.length >= 0){
-            res.status(200).json(response);
-        //}
-        //else {
-            //res.status(404).json({ message: 'No entries found'});
-        //}
+router.get('/', ProductController.products_get_all);
 
-    })
-    .catch(err => {
-        console.log(err);
-        res.status(500).json({
-            error: err
-        });
-    });
-});
+router.post('/', upload.single('productImage'), ProductController.Product_post_product);
 
-router.post('/',checkAuth,upload.single('productImage'),(req, res, next) => {
-    const product = new Product({ //constructor function
-        _id: new mongoose.Types.ObjectId(),
-        name: req.body.name,
-        price: req.body.price,
-        productImage: req.file.path
-    });
-    
-    product.save()
-    .then(result => {
-        console.log(result);
-    
-    res.status(201).json({
-            message: 'Created product successfully'+result._id,
-            createdProduct: {
-                name: result.name,
-                price: result.price,
-                _id: result._id,
-                request: {
-                    type: 'GET',
-                    URL: "HTTP://localhost:3000/products/"+ result._id
-                }
-            }
-        });
-    })
-    .catch(err => {
-        console.log(err);
-        res.status(500).json({
-            error: err
-        });
-    });
-});
 
 router.get("/:productId", (req, res, next) => {
     const id = req.params.productId;
